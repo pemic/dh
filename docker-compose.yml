@@ -1,0 +1,40 @@
+services:
+  mqtt:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto_server
+    ports:
+      - 1883:1883
+      - 9001:9001
+    restart: unless-stopped
+    volumes:
+      - $PWD/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - $PWD/mosquitto_data:/mosquitto/data
+      - $PWD/mosquitto_log:/mosquitto/log
+      - $PWD/config:/mosquitto/config
+    #  - $PWD/mosquitto.passwd:/mosquitto/config/mosquitto.passwd
+
+  node-red:
+    image: nodered/node-red:latest
+    container_name: nodered
+    ports:
+      - 1880:1880
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Berlin
+    volumes:
+      - $PWD/nodered_data:/data
+  #      - $PWD/config:/mosquitto/config
+
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    restart: unless-stopped
+    ports:
+      - 8086:8086
+    volumes:
+      - $PWD/influxdb:/var/lib/influxdb2
+volumes:
+  mosquitto_data: null
+  nodered_data: null
+  influxdb: null
+networks: {}
